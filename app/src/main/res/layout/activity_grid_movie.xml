@@ -5,7 +5,7 @@
     android:id="@+id/activity_grid_movie"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="pazzaglia.it.moviedb.GridMovieActivity">
+    tools:context="pazzaglia.it.moviedb.ui.GridMovieActivity">
 
 
     <GridView
