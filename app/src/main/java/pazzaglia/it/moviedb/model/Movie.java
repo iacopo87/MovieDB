@@ -1,6 +1,8 @@
 
 package pazzaglia.it.moviedb.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,19 +10,28 @@ import java.util.Map;
 
 public class Movie {
 
+    @SerializedName("poster_path")
     private String posterPath;
+
     private Boolean adult;
     private String overview;
+    @SerializedName("release_date")
     private String releaseDate;
+    @SerializedName("genre_ids")
     private List<Integer> genreIds = new ArrayList<Integer>();
     private Integer id;
+    @SerializedName("original_title")
     private String originalTitle;
+    @SerializedName("original_language")
     private String originalLanguage;
     private String title;
+    @SerializedName("backdrop_path")
     private String backdropPath;
     private Double popularity;
+    @SerializedName("vote_count")
     private Integer voteCount;
     private Boolean video;
+    @SerializedName("vote_average")
     private Double voteAverage;
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
