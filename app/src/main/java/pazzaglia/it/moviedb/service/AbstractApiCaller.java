@@ -3,18 +3,6 @@ package pazzaglia.it.moviedb.service;
 import android.app.Activity;
 import android.app.ProgressDialog;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-
-import java.lang.reflect.Type;
-import java.text.SimpleDateFormat;
-
-import pazzaglia.it.moviedb.model.Movie;
 import pazzaglia.it.moviedb.shared.Util;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -40,15 +28,10 @@ public abstract class AbstractApiCaller<T> {
 
     protected  TheMovieDBInterface getApiService(){
 
-        final Gson gson = new GsonBuilder()
-                .registerTypeAdapter(Movie.class, new CustomDeserialize())
-                .create();
-
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-                    //.addConverterFactory(MoshiConverterFactory.create())//                .build();
 
         final TheMovieDBInterface mInterfaceService = retrofit.create(TheMovieDBInterface.class);
         return mInterfaceService;
@@ -62,9 +45,9 @@ public abstract class AbstractApiCaller<T> {
                 T mObject = response.body();
                 boolean responseHasError = response.errorBody()!= null && mObject==null;
                 if(!responseHasError){
-                    callback.onDownloadFinishedOK(mObject);//doApiCallOK(mObject);
+                    callback.onDownloadFinishedOK(mObject);
                 }else {
-                    callback.onDownloadFinishedKO(mObject);//doApiCallKO(mObject);
+                    callback.onDownloadFinishedKO(mObject);
                 }
                 Util.dismissDialog(progressDialog);
             }
@@ -81,27 +64,4 @@ public abstract class AbstractApiCaller<T> {
     public void doApiCallOnFailure(){};
     public abstract Call<T> specificApiCall();
 
-}
-
- class CustomDeserialize implements JsonDeserializer<Movie> {
-
-    private final SimpleDateFormat FORMAT = new SimpleDateFormat("yyyy-MM-dd");
-
-    @Override
-    public Movie deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        final Movie response = new Movie();
-        final JsonObject obj = json.getAsJsonObject();
-
-        // Try parse date.
-        try {
-            response.setPosterPath(obj.get("poster_path").getAsString()); // parse created-at
-
-            return response;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
-        return response;
-    }
 }

@@ -1,18 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_grid_movie"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="pazzaglia.it.moviedb.ui.GridMovieActivity">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
     <GridView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:columnWidth="180dp"
         android:id="@+id/grid_view"
         android:numColumns="auto_fit"
         android:stretchMode="columnWidth"
         android:gravity="center" />
-</FrameLayout>
+
+
+
+</android.support.v7.widget.LinearLayoutCompat>

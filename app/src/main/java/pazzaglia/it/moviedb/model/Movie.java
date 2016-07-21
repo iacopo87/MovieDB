@@ -3,37 +3,45 @@ package pazzaglia.it.moviedb.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import org.parceler.Parcel;
+import org.parceler.Transient;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Parcel
 public class Movie {
 
     @SerializedName("poster_path")
-    private String posterPath;
+    public String posterPath;
 
-    private Boolean adult;
-    private String overview;
+    public Boolean adult;
+    public String overview;
     @SerializedName("release_date")
-    private String releaseDate;
+    public String releaseDate;
     @SerializedName("genre_ids")
-    private List<Integer> genreIds = new ArrayList<Integer>();
-    private Integer id;
+    public List<Integer> genreIds = new ArrayList<Integer>();
+    public Integer id;
     @SerializedName("original_title")
-    private String originalTitle;
+    public String originalTitle;
     @SerializedName("original_language")
-    private String originalLanguage;
-    private String title;
+    public String originalLanguage;
+    public String title;
     @SerializedName("backdrop_path")
-    private String backdropPath;
-    private Double popularity;
+    public String backdropPath;
+    public Double popularity;
     @SerializedName("vote_count")
-    private Integer voteCount;
-    private Boolean video;
+    public Integer voteCount;
+    public Boolean video;
     @SerializedName("vote_average")
-    private Double voteAverage;
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    public Double voteAverage;
+    @Transient
+    public Map<String, Object> additionalProperties = new HashMap<String, Object>();
+
+    //Empty constructor for Parceler
+    public Movie(){};
 
     /**
      * 

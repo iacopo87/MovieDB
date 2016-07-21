@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">MovieDB</string>
+    <string name="toggle_order">Toggle order</string>
+    <string name="title_activity_movie_detail">MovieDetailActivity</string>
 </resources>
