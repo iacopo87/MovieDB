@@ -19,11 +19,11 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import pazzaglia.it.moviedb.R;
 import pazzaglia.it.moviedb.adapter.GridViewAdapter;
-import pazzaglia.it.moviedb.model.Movie;
-import pazzaglia.it.moviedb.model.Movies;
-import pazzaglia.it.moviedb.service.AbstractApiCaller;
-import pazzaglia.it.moviedb.service.PopularMoviesCaller;
-import pazzaglia.it.moviedb.service.TopRatedMoviesCaller;
+import pazzaglia.it.moviedb.models.Movie;
+import pazzaglia.it.moviedb.models.Movies;
+import pazzaglia.it.moviedb.networks.AbstractApiCaller;
+import pazzaglia.it.moviedb.networks.PopularMoviesCaller;
+import pazzaglia.it.moviedb.networks.TopRatedMoviesCaller;
 import pazzaglia.it.moviedb.shared.Constant;
 
 public class GridMovieActivity extends AppCompatActivity {

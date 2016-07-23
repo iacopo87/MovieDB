@@ -1,5 +1,5 @@
 
-package pazzaglia.it.moviedb.model;
+package pazzaglia.it.moviedb.models;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -1,7 +1,7 @@
-package pazzaglia.it.moviedb.service;
+package pazzaglia.it.moviedb.networks;
 
-import pazzaglia.it.moviedb.model.Movies;
-import pazzaglia.it.moviedb.shared.Credentials;
+import pazzaglia.it.moviedb.BuildConfig;
+import pazzaglia.it.moviedb.models.Movies;
 import retrofit2.Call;
 
 /**
@@ -15,6 +15,6 @@ public class PopularMoviesCaller extends AbstractApiCaller<Movies>{
     @Override
     public Call<Movies> specificApiCall() {
         return getApiService()
-                .getPopularMovies(Credentials.API_KEY);
+                .getPopularMovies(BuildConfig.MOVIEDB_APIKEY);
     }
 }

@@ -1,7 +1,7 @@
-package pazzaglia.it.moviedb.service;
+package pazzaglia.it.moviedb.networks;
 
-import pazzaglia.it.moviedb.model.Movie;
-import pazzaglia.it.moviedb.model.Movies;
+import pazzaglia.it.moviedb.models.Movie;
+import pazzaglia.it.moviedb.models.Movies;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;

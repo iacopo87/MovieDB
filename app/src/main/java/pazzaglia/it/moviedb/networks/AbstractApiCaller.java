@@ -1,4 +1,4 @@
-package pazzaglia.it.moviedb.service;
+package pazzaglia.it.moviedb.networks;
 
 import android.app.Activity;
 import android.app.ProgressDialog;

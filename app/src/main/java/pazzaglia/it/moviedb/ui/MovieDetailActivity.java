@@ -14,7 +14,7 @@ import org.parceler.Parcels;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import pazzaglia.it.moviedb.R;
-import pazzaglia.it.moviedb.model.Movie;
+import pazzaglia.it.moviedb.models.Movie;
 import pazzaglia.it.moviedb.shared.Constant;
 
 public class MovieDetailActivity extends AppCompatActivity {
