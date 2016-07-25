@@ -1,4 +1,4 @@
-package pazzaglia.it.moviedb.shared;
+package pazzaglia.it.moviedb.utils;
 
 /**
  * Created by IO on 13/07/2016.

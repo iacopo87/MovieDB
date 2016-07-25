@@ -15,7 +15,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import pazzaglia.it.moviedb.R;
 import pazzaglia.it.moviedb.models.Movie;
-import pazzaglia.it.moviedb.shared.Constant;
+import pazzaglia.it.moviedb.utils.Constant;
 
 public class MovieDetailActivity extends AppCompatActivity {
 

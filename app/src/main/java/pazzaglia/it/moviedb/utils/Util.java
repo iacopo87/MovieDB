@@ -1,4 +1,4 @@
-package pazzaglia.it.moviedb.shared;
+package pazzaglia.it.moviedb.utils;
 
 import android.app.Activity;
 import android.app.ProgressDialog;

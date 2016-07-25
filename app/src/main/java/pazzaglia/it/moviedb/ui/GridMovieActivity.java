@@ -1,8 +1,11 @@
 package pazzaglia.it.moviedb.ui;
 
+import android.app.LoaderManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.Loader;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -19,14 +22,18 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import pazzaglia.it.moviedb.R;
 import pazzaglia.it.moviedb.adapter.GridViewAdapter;
+import pazzaglia.it.moviedb.data.MovieProvider;
 import pazzaglia.it.moviedb.models.Movie;
 import pazzaglia.it.moviedb.models.Movies;
 import pazzaglia.it.moviedb.networks.AbstractApiCaller;
 import pazzaglia.it.moviedb.networks.PopularMoviesCaller;
 import pazzaglia.it.moviedb.networks.TopRatedMoviesCaller;
-import pazzaglia.it.moviedb.shared.Constant;
+import pazzaglia.it.moviedb.utils.Constant;
 
-public class GridMovieActivity extends AppCompatActivity {
+public class GridMovieActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+
+    private static final int CURSOR_LOADER_ID = 0;
+
     private GridViewAdapter gridViewAdapter;
     @Bind(R.id.grid_view)
     GridView _gridView;
@@ -56,7 +63,15 @@ public class GridMovieActivity extends AppCompatActivity {
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
+        Cursor c = getContentResolver().query(MovieProvider.Movies.CONTENT_URI,
+                null, null, null, null);
+        if (c == null || c.getCount() == 0){
+            //insertData();
+        }
+
         updateMovies();
+
+        getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
 
         _gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -128,4 +143,20 @@ public class GridMovieActivity extends AppCompatActivity {
             Snackbar.make(findViewById(android.R.id.content), "Most Popular", Snackbar.LENGTH_LONG).show();
         }
     }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+        return null;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
+    }
+
 }

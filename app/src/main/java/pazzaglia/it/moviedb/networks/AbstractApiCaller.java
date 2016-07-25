@@ -3,14 +3,14 @@ package pazzaglia.it.moviedb.networks;
 import android.app.Activity;
 import android.app.ProgressDialog;
 
-import pazzaglia.it.moviedb.shared.Util;
+import pazzaglia.it.moviedb.utils.Util;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import static pazzaglia.it.moviedb.shared.Constant.BASE_URL;
+import static pazzaglia.it.moviedb.utils.Constant.BASE_URL;
 
 
 /**

@@ -27,6 +27,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="pazzaglia.it.moviedb.ui.GridMovieActivity" />
         </activity>
+        <provider
+            android:authorities="pazzaglia.it.moviedb"
+            android:name=".data.generated.MovieProvider"
+            android:exported="false"/>
     </application>
 
 </manifest>

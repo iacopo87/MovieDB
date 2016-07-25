@@ -32,6 +32,8 @@ apply plugin: 'com.neenbedankt.android-apt'
 dependencies {
     compile 'org.parceler:parceler-api:1.1.1'
     apt 'org.parceler:parceler:1.1.1'
+    apt 'net.simonvt.schematic:schematic-compiler:0.6.7'
+    compile 'net.simonvt.schematic:schematic:0.6.7'
     compile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
@@ -42,7 +44,6 @@ dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha3'
     compile 'com.jakewharton:butterknife:7.0.1'
     compile 'com.google.code.gson:gson:2.6.2'
-    compile 'com.squareup.retrofit2:converter-moshi:2.1.0'
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.squareup.retrofit2:converter-gson:2.1.0'
     testCompile 'junit:junit:4.12'
