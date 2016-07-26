@@ -13,7 +13,7 @@ public class PopularMoviesCaller extends AbstractApiCaller<Movies>{
     private static final String TAG = "PopularMoviesCaller";
 
     @Override
-    public Call<Movies> specificApiCall() {
+    public Call<Movies> specificApiCall(int movieId) {
         return getApiService()
                 .getPopularMovies(BuildConfig.MOVIEDB_APIKEY);
     }

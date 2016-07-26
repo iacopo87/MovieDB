@@ -36,9 +36,9 @@ public abstract class AbstractApiCaller<T> {
         final TheMovieDBInterface mInterfaceService = retrofit.create(TheMovieDBInterface.class);
         return mInterfaceService;
     }
-    public void doApiCall(Activity activity, String loadingMessage, final MyCallbackInterface<T> callback){
+    public void doApiCall(Activity activity, String loadingMessage, int movieId, final MyCallbackInterface<T> callback){
         final ProgressDialog progressDialog = Util.showDialog(activity, loadingMessage);
-        Call<T> mService = specificApiCall();
+        Call<T> mService = specificApiCall(movieId);
         mService.enqueue(new Callback<T>() {
             @Override
             public void onResponse(Call<T> call, Response<T> response) {
@@ -59,9 +59,8 @@ public abstract class AbstractApiCaller<T> {
         });
     }
 
-    //public abstract void doApiCallOK(T mObject);
-    //public abstract void doApiCallKO(T mObject);
+
     public void doApiCallOnFailure(){};
-    public abstract Call<T> specificApiCall();
+    public abstract Call<T> specificApiCall(int movieId);
 
 }

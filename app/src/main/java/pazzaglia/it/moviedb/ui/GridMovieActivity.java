@@ -123,12 +123,12 @@ public class GridMovieActivity extends AppCompatActivity implements LoaderManage
 
     private void loadPopularMovies(){
         PopularMoviesCaller popularMoviesCaller = new PopularMoviesCaller();
-        popularMoviesCaller.doApiCall(this, "Loading popular Movies",apiCallback );
+        popularMoviesCaller.doApiCall(this, "Loading popular Movies", 0, apiCallback);
     }
 
     private void loadTopRatedMovies(){
         TopRatedMoviesCaller topRatedMoviesCaller = new TopRatedMoviesCaller();
-        topRatedMoviesCaller.doApiCall(this, "Loading top rated Movies", apiCallback);
+        topRatedMoviesCaller.doApiCall(this, "Loading top rated Movies", 0, apiCallback);
     }
 
     private void updateMovies(){

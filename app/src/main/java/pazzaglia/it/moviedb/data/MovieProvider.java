@@ -51,4 +51,44 @@ public final class MovieProvider {
         }
     }
 
+    @TableEndpoint(table = MovieDatabase.MOVIE_REVIEW)
+    public static class MovieReview {
+
+        @ContentUri(
+                path = Path.REVIEWS,
+                type = "vnd.android.cursor.dir/review",
+                defaultSort = MovieReviewColumns._ID + " ASC")
+        public static final Uri CONTENT_URI = buildUri(Path.REVIEWS);
+
+        @InexactContentUri(
+                name = "MOVIES_REVIEW_ID",
+                path = Path.REVIEWS + "/#",
+                type = "vnd.android.cursor.item/review",
+                whereColumn = MovieReviewColumns._ID,
+                pathSegment = 1)
+        public static Uri withId(long id){
+            return buildUri(Path.REVIEWS, String.valueOf(id));
+        }
+    }
+
+    @TableEndpoint(table = MovieDatabase.MOVIE_VIDEO)
+    public static class MovieVideo {
+
+        @ContentUri(
+                path = Path.VIDEOS,
+                type = "vnd.android.cursor.dir/video",
+                defaultSort = MovieVideoColumns._ID + " ASC")
+        public static final Uri CONTENT_URI = buildUri(Path.VIDEOS);
+
+        @InexactContentUri(
+                name = "MOVIES_VIDEO_ID",
+                path = Path.VIDEOS + "/#",
+                type = "vnd.android.cursor.item/video",
+                whereColumn = MovieVideoColumns._ID,
+                pathSegment = 1)
+        public static Uri withId(long id){
+            return buildUri(Path.VIDEOS, String.valueOf(id));
+        }
+    }
+
 }

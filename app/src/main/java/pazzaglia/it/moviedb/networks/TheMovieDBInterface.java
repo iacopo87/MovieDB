@@ -1,6 +1,8 @@
 package pazzaglia.it.moviedb.networks;
 
 import pazzaglia.it.moviedb.models.Movie;
+import pazzaglia.it.moviedb.models.MovieReviews;
+import pazzaglia.it.moviedb.models.MovieVideos;
 import pazzaglia.it.moviedb.models.Movies;
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -21,5 +23,11 @@ public interface TheMovieDBInterface {
 
     @GET("movie/{id}")
     Call<Movie> getdMovieDetail(@Path("id") int movieId, @Query("api_key") String apiKey);
+
+    @GET("movie/{id}/reviews")
+    Call<MovieReviews> getdMovieReviews(@Path("id") int movieId, @Query("api_key") String apiKey);
+
+    @GET("movie/{id}/videos")
+    Call<MovieVideos> getdMovieVideos(@Path("id") int movieId, @Query("api_key") String apiKey);
 
 }
