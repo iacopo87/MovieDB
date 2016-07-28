@@ -1,6 +1,7 @@
 package pazzaglia.it.moviedb.data;
 
 import net.simonvt.schematic.annotation.DataType;
+import net.simonvt.schematic.annotation.IfNotExists;
 import net.simonvt.schematic.annotation.NotNull;
 import net.simonvt.schematic.annotation.PrimaryKey;
 
@@ -10,7 +11,7 @@ import net.simonvt.schematic.annotation.PrimaryKey;
 
 public interface MovieColumns {
 
-    @DataType(DataType.Type.INTEGER) @PrimaryKey
+    @DataType(DataType.Type.INTEGER) @PrimaryKey @IfNotExists
     public static final String _ID =
             "_id";
 

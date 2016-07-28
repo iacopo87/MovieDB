@@ -3,6 +3,9 @@ package pazzaglia.it.moviedb.networks;
 import android.app.Activity;
 import android.app.ProgressDialog;
 
+import com.facebook.stetho.okhttp3.StethoInterceptor;
+
+import okhttp3.OkHttpClient;
 import pazzaglia.it.moviedb.utils.Util;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -28,8 +31,13 @@ public abstract class AbstractApiCaller<T> {
 
     protected  TheMovieDBInterface getApiService(){
 
+        OkHttpClient client = new OkHttpClient.Builder()
+                .addNetworkInterceptor(new StethoInterceptor())
+                .build();
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
+                .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 

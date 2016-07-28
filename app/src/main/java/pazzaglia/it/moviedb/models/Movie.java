@@ -37,11 +37,21 @@ public class Movie {
     public Boolean video;
     @SerializedName("vote_average")
     public Double voteAverage;
+
+    public Integer favourite;
     @Transient
     public Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     //Empty constructor for Parceler
     public Movie(){};
+
+    public Integer getFavourite() {
+        return favourite;
+    }
+
+    public void setFavourite(Integer favourite) {
+        this.favourite = favourite;
+    }
 
     /**
      * 
