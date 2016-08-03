@@ -1,20 +1,16 @@
 package pazzaglia.it.moviedb.ui;
 
-import android.content.ContentProviderOperation;
 import android.content.Context;
 import android.content.Intent;
-import android.content.OperationApplicationException;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.os.RemoteException;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,8 +18,6 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 
 import org.parceler.Parcels;
-
-import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -33,11 +27,11 @@ import pazzaglia.it.moviedb.adapter.GridViewCursorAdapter;
 import pazzaglia.it.moviedb.data.MovieColumns;
 import pazzaglia.it.moviedb.data.MovieProvider;
 import pazzaglia.it.moviedb.models.Movie;
-import pazzaglia.it.moviedb.models.Movies;
-import pazzaglia.it.moviedb.networks.AbstractApiCaller;
-import pazzaglia.it.moviedb.networks.PopularMoviesCaller;
-import pazzaglia.it.moviedb.networks.TopRatedMoviesCaller;
+import pazzaglia.it.moviedb.services.MovieService;
 import pazzaglia.it.moviedb.utils.Constant;
+import pazzaglia.it.moviedb.utils.Util;
+
+import static pazzaglia.it.moviedb.utils.Constant.SORTING_POPULAR;
 
 public class GridMovieActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final String TAG = "GridMovieActivity";
@@ -48,7 +42,7 @@ public class GridMovieActivity extends AppCompatActivity implements LoaderManage
 
     @Bind(R.id.grid_view)
     GridView _gridView;
-    int selectedSortOrder = Constant.SORTING_POPULAR;
+    int selectedSortOrder = SORTING_POPULAR;
 
     String[] MOVIE_COLUMN = {
             MovieColumns._ID,
@@ -69,21 +63,6 @@ public class GridMovieActivity extends AppCompatActivity implements LoaderManage
     public static int COL_FAVOURITE = 6;
 
 
-    private AbstractApiCaller.MyCallbackInterface apiCallback = new AbstractApiCaller.MyCallbackInterface<Movies>() {
-        @Override
-        public void onDownloadFinishedOK(Movies result) {
-            //gridViewAdapter = new GridViewAdapter(GridMovieActivity.this,
-                    //result.getResults());
-            //_gridView.setAdapter(gridViewAdapter);
-           // gridViewAdapter.notifyDataSetChanged();
-            insertMovies(result);
-        }
-        @Override
-        public void onDownloadFinishedKO(Movies result) {
-
-        }
-    };
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,19 +72,9 @@ public class GridMovieActivity extends AppCompatActivity implements LoaderManage
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
-/*        Cursor c = getContentResolver().query(MovieProvider.Movies.CONTENT_URI,
-                null, null, null, null);
-
-        if (c == null || c.getCount() == 0 || !c.moveToFirst()){
-            updateMovies();
-            gridViewCursorAdapter = new GridViewCursorAdapter(this, null, 0);
-        } else {
-            gridViewCursorAdapter = new GridViewCursorAdapter(this, c, 0);
-        }*/
         gridViewCursorAdapter = new GridViewCursorAdapter(this, null, 0);
         _gridView.setAdapter(gridViewCursorAdapter);
         getSupportLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
-
 
         _gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -148,7 +117,7 @@ public class GridMovieActivity extends AppCompatActivity implements LoaderManage
                 // User chose the "Favorite" action, mark the current item
                 // as a favorite...
                 selectedSortOrder = (selectedSortOrder == Constant.SORTING_TOP_RATED)?
-                        Constant.SORTING_POPULAR:
+                        SORTING_POPULAR:
                         Constant.SORTING_TOP_RATED;
 
                 SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
@@ -156,7 +125,10 @@ public class GridMovieActivity extends AppCompatActivity implements LoaderManage
                 editor.putInt(Constant.PREFERENCE_SORTING, selectedSortOrder);
                 editor.commit();
 
-                updateMovies();
+                if(Util.isOnline(this)){
+                    updateMovies();
+                    getSupportLoaderManager().restartLoader(CURSOR_LOADER_ID, null, this);
+                }
                 return true;
 
             default:
@@ -167,50 +139,29 @@ public class GridMovieActivity extends AppCompatActivity implements LoaderManage
         }
     }
 
-    private void loadPopularMovies(){
-        PopularMoviesCaller popularMoviesCaller = new PopularMoviesCaller();
-        popularMoviesCaller.doApiCall(this, "Loading popular Movies", 0, apiCallback);
-    }
-
-    private void loadTopRatedMovies(){
-        TopRatedMoviesCaller topRatedMoviesCaller = new TopRatedMoviesCaller();
-        topRatedMoviesCaller.doApiCall(this, "Loading top rated Movies", 0, apiCallback);
-    }
-
     private void updateMovies(){
-        selectedSortOrder = getPreferences(Context.MODE_PRIVATE).getInt(Constant.PREFERENCE_SORTING, Constant.SORTING_POPULAR);
+        selectedSortOrder = getPreferences(Context.MODE_PRIVATE).getInt(Constant.PREFERENCE_SORTING, SORTING_POPULAR);
         if(selectedSortOrder == Constant.SORTING_TOP_RATED){
             selectedSortOrder=Constant.SORTING_TOP_RATED;
             loadTopRatedMovies();
             Snackbar.make(findViewById(android.R.id.content), "Top rated", Snackbar.LENGTH_LONG).show();
         }else {
-            selectedSortOrder = Constant.SORTING_POPULAR;
+            selectedSortOrder = SORTING_POPULAR;
             loadPopularMovies();
             Snackbar.make(findViewById(android.R.id.content), "Most Popular", Snackbar.LENGTH_LONG).show();
         }
     }
-    public void insertMovies(Movies movies){
-        ArrayList<ContentProviderOperation> batchOperations = new ArrayList<>();
 
-        for (Movie movie : movies.getResults()){
-            ContentProviderOperation.Builder builder = ContentProviderOperation.newInsert(
-                    MovieProvider.Movies.CONTENT_URI);
-            builder.withValue(MovieColumns._ID, movie.getId());
-            builder.withValue(MovieColumns.POSTER_PATH, movie.getPosterPath());
-            builder.withValue(MovieColumns.ORIGINAL_TITLE, movie.getOriginalTitle());
-            builder.withValue(MovieColumns.VOTE_AVERAGE, movie.getVoteAverage());
-            builder.withValue(MovieColumns.RELEASE_DATE, movie.getReleaseDate());
-            builder.withValue(MovieColumns.OVERVIEW, movie.getOverview());
-            builder.withValue(MovieColumns.FAVOURITE, 0);
-            batchOperations.add(builder.build());
-        }
+    private void loadPopularMovies(){
+        Intent intent = new Intent(this, MovieService.class);
+        intent.putExtra(Constant.EXTRA_MOVIE_SORTING, SORTING_POPULAR);
+        startService(intent);
+    }
 
-        try{
-           getContentResolver().applyBatch(MovieProvider.AUTHORITY, batchOperations);
-        } catch(RemoteException | OperationApplicationException e){
-            Log.e(TAG, "Error applying batch insert", e);
-        }
-
+    private void loadTopRatedMovies(){
+        Intent intent = new Intent(this, MovieService.class);
+        intent.putExtra(Constant.EXTRA_MOVIE_SORTING, SORTING_POPULAR);
+        startService(intent);
     }
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
@@ -218,17 +169,14 @@ public class GridMovieActivity extends AppCompatActivity implements LoaderManage
                 MOVIE_COLUMN,
                 null,
                 null,
-                null);
+                (selectedSortOrder == SORTING_POPULAR)?MovieColumns.POPULARITY:MovieColumns.VOTE_AVERAGE + " DESC");
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if (gridViewCursorAdapter == null) {
-            gridViewCursorAdapter = new GridViewCursorAdapter(this, data, 0);
-        } else {
-            gridViewCursorAdapter.swapCursor(data);
-        }
+        gridViewCursorAdapter.swapCursor(data);
         gridViewCursorAdapter.notifyDataSetChanged();
+        updateMovies();
     }
 
     @Override

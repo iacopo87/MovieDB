@@ -37,7 +37,7 @@ public final class MovieProvider {
         @ContentUri(
                 path = Path.MOVIES,
                 type = "vnd.android.cursor.dir/movie",
-                defaultSort = MovieColumns.RELEASE_DATE + " ASC")
+                defaultSort = MovieColumns.RELEASE_DATE + " DESC")
         public static final Uri CONTENT_URI = buildUri(Path.MOVIES);
 
         @InexactContentUri(

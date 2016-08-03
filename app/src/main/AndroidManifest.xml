@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
-        android:name="pazzaglia.it.moviedb.MovieDBApplication"
+        android:name=".MovieDBApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -28,10 +28,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="pazzaglia.it.moviedb.ui.GridMovieActivity" />
         </activity>
+
         <provider
-            android:authorities="pazzaglia.it.moviedb"
             android:name=".data.generated.MovieProvider"
-            android:exported="false"/>
+            android:authorities="pazzaglia.it.moviedb"
+            android:exported="false" />
+
+        <service
+            android:name=".services.MovieService"
+            android:exported="false"></service>
     </application>
 
 </manifest>

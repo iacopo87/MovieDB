@@ -15,8 +15,8 @@ public final class MovieDatabase {
 
     @Table(MovieColumns.class) public static final String MOVIE = "movie";
 
-    @Table(MovieColumns.class) public static final String MOVIE_REVIEW = "movie_review";
+    @Table(MovieReviewColumns.class) public static final String MOVIE_REVIEW = "movie_review";
 
-    @Table(MovieColumns.class) public static final String MOVIE_VIDEO = "movie_video";
+    @Table(MovieVideoColumns.class) public static final String MOVIE_VIDEO = "movie_video";
 }
 

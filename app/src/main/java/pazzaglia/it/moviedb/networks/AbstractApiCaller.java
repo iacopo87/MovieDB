@@ -1,12 +1,10 @@
 package pazzaglia.it.moviedb.networks;
 
-import android.app.Activity;
-import android.app.ProgressDialog;
+import android.content.Context;
 
 import com.facebook.stetho.okhttp3.StethoInterceptor;
 
 import okhttp3.OkHttpClient;
-import pazzaglia.it.moviedb.utils.Util;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -44,8 +42,8 @@ public abstract class AbstractApiCaller<T> {
         final TheMovieDBInterface mInterfaceService = retrofit.create(TheMovieDBInterface.class);
         return mInterfaceService;
     }
-    public void doApiCall(Activity activity, String loadingMessage, int movieId, final MyCallbackInterface<T> callback){
-        final ProgressDialog progressDialog = Util.showDialog(activity, loadingMessage);
+    public void doApiCall(Context context, String loadingMessage, int movieId, final MyCallbackInterface<T> callback){
+        //final ProgressDialog progressDialog = Util.showDialog(context, loadingMessage);
         Call<T> mService = specificApiCall(movieId);
         mService.enqueue(new Callback<T>() {
             @Override
@@ -57,7 +55,7 @@ public abstract class AbstractApiCaller<T> {
                 }else {
                     callback.onDownloadFinishedKO(mObject);
                 }
-                Util.dismissDialog(progressDialog);
+                //Util.dismissDialog(progressDialog);
             }
             @Override
             public void onFailure(Call<T> call, Throwable t) {

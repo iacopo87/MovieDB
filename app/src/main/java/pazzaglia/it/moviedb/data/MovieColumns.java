@@ -24,6 +24,9 @@ public interface MovieColumns {
     @DataType(DataType.Type.REAL) @NotNull
     public static final String VOTE_AVERAGE = "vote_average";
 
+    @DataType(DataType.Type.REAL) @NotNull
+    public static final String POPULARITY = "popularity";
+
     @DataType(DataType.Type.TEXT) @NotNull
     public static final String RELEASE_DATE = "release_date";
 
