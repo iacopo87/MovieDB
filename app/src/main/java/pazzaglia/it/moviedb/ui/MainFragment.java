@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ListView;
 
 import org.parceler.Parcels;
 
@@ -35,6 +36,7 @@ import pazzaglia.it.moviedb.services.MovieService;
 import pazzaglia.it.moviedb.utils.Constant;
 import pazzaglia.it.moviedb.utils.Util;
 
+import static pazzaglia.it.moviedb.utils.Constant.SAVE_POSITION;
 import static pazzaglia.it.moviedb.utils.Constant.SORTING_POPULAR;
 
 /**
@@ -62,6 +64,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     GridView _gridView;
     int selectedSortOrder = SORTING_POPULAR;
     private View rootView;
+    private int mPosition;
 
     String[] MOVIE_COLUMN = {
             MovieColumns._ID,
@@ -160,6 +163,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
                     movie.setOverview(cursor.getString(COL_OVERVIEW));
                     movie.setFavourite(cursor.getInt(COL_FAVOURITE));
 
+                    mPosition = cursor.getPosition();
                     ((Callback) getActivity())
                             .onItemSelected(Parcels.wrap(movie));
 
@@ -167,11 +171,23 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
             }
         });
 
+        if(savedInstanceState != null && savedInstanceState.containsKey(SAVE_POSITION)){
+            mPosition = savedInstanceState.getInt(SAVE_POSITION);
+        }
 
 
         return rootView;
 
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        if(mPosition != ListView.INVALID_POSITION) {
+            outState.putInt(SAVE_POSITION, mPosition);
+        }
+        super.onSaveInstanceState(outState);
+    }
+
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -216,6 +232,9 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         gridViewCursorAdapter.swapCursor(data);
         gridViewCursorAdapter.notifyDataSetChanged();
+        if(mPosition != ListView.INVALID_POSITION) {
+            _gridView.smoothScrollToPosition(mPosition);
+        }
         if(Util.isOnline(getActivity())){
             updateMovies();
         }

@@ -18,4 +18,7 @@ public class Constant {
     //Intent extra
     public static final String EXTRA_MOVIE = "EXTRA_MOVIE";
     public static final String EXTRA_MOVIE_SORTING = "EXTRA_MOVIE_SORTING";
+
+    //Miscellaneos
+    public static final String SAVE_POSITION = "SAVE_POSITION";
 }
