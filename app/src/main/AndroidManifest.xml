@@ -12,7 +12,11 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.GridMovieActivity">
+
+        <activity
+            android:name=".ui.MainActivity"
+            android:label="MovieDB"
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -20,13 +24,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.MovieDetailActivity"
+            android:name=".ui.DetailActivity"
             android:label="@string/title_activity_movie_detail"
-            android:parentActivityName=".ui.GridMovieActivity"
+            android:parentActivityName=".ui.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="pazzaglia.it.moviedb.ui.GridMovieActivity" />
+                android:value="pazzaglia.it.moviedb.ui.MainActivity" />
         </activity>
 
         <provider
@@ -36,7 +40,9 @@
 
         <service
             android:name=".services.MovieService"
-            android:exported="false"></service>
+            android:exported="false" />
+
+
     </application>
 
 </manifest>
