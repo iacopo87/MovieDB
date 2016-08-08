@@ -1,7 +1,6 @@
 package pazzaglia.it.moviedb.ui;
 
-import android.content.ContentProviderOperation;
-import android.content.ContentValues;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -93,13 +92,16 @@ public class DetailFragment extends Fragment {
         _txtReleaseDate.setText(movie.getReleaseDate().toString());
         _txtMovieOverview.setText(movie.getOverview());
         _btnFavourite.setChecked(movie.getFavourite() == 1);
-        Picasso.with(getActivity()) //
+        byte[] imgByte = movie.getImageBlob();
+            _imgMovie.setImageBitmap(BitmapFactory.decodeByteArray(imgByte, 0, imgByte.length));
+
+	/*Picasso.with(getActivity()) //
                 .load(Constant.BASE_IMG_URL + movie.getPosterPath()) //
                 .placeholder(R.color.colorPrimary) //
                 .resize(120,180)
                 .centerCrop()
                 .tag(this) //
-                .into(_imgMovie);
+                .into(_imgMovie); */
     }
 
     private void loadAdditionalData(){

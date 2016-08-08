@@ -29,7 +29,7 @@ tools:context="pazzaglia.it.moviedb.ui.DetailActivity">
         android:layout_height="match_parent"
         tools:context="pazzaglia.it.moviedb.ui.DetailActivity"
         tools:ignore="MergeRootFrame"
-        android:layout_marginTop="?attr/actionBarSize"/>
+        android:layout_marginTop="?attr/actionBarSize" />
 
 
 </android.support.design.widget.CoordinatorLayout>

@@ -39,6 +39,8 @@ public class Movie {
     public Double voteAverage;
 
     public Integer favourite;
+
+    public byte[] imageBlob;
     @Transient
     public Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
@@ -47,6 +49,14 @@ public class Movie {
 
     public Integer getFavourite() {
         return favourite;
+    }
+
+    public byte[] getImageBlob() {
+        return imageBlob;
+    }
+
+    public void setImageBlob(byte[] imageBlob) {
+        this.imageBlob = imageBlob;
     }
 
     public void setFavourite(Integer favourite) {
