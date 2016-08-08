@@ -35,4 +35,8 @@ public interface MovieColumns {
 
     @DataType(DataType.Type.INTEGER) @NotNull
     public static final String FAVOURITE = "favourite";
+
+    @DataType(DataType.Type.BLOB)
+    public static final String POSTER_BLOB = "poster_blob";
+
 }

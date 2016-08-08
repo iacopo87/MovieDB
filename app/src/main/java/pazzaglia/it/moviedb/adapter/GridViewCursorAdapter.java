@@ -3,18 +3,16 @@ package pazzaglia.it.moviedb.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.BitmapFactory;
 import android.support.v4.widget.CursorAdapter;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.squareup.picasso.Picasso;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import pazzaglia.it.moviedb.R;
 import pazzaglia.it.moviedb.data.MovieColumns;
-import pazzaglia.it.moviedb.utils.Constant;
 
 /**
  * Created by IO on 12/07/2016.
@@ -41,15 +39,16 @@ public class GridViewCursorAdapter extends CursorAdapter{
 
     private void loadPosterImage(ViewHolder holder, Cursor c){
         // Get the image URL for the current position.
-        String posterPathUrl = c.getString(c.getColumnIndex(MovieColumns.POSTER_PATH));
-
+        //String posterPathUrl = c.getString(c.getColumnIndex(MovieColumns.POSTER_PATH));
+        byte[] imgByte = c.getBlob(c.getColumnIndex(MovieColumns.POSTER_BLOB));
+        holder.imageView.setImageBitmap(BitmapFactory.decodeByteArray(imgByte, 0, imgByte.length));
         // Trigger the download of the URL asynchronously into the image view
-        Picasso.with(context) //
+       /* Picasso.with(context) //
                 .load(Constant.BASE_IMG_URL + posterPathUrl) //
                 .placeholder(R.color.colorPrimary) //
                 .fit() //
                 .tag(context) //
-                .into(holder.imageView);
+                .into(holder.imageView);*/
     }
 
     @Override

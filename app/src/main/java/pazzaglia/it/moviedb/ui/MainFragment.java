@@ -73,7 +73,8 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
             MovieColumns.VOTE_AVERAGE,
             MovieColumns.RELEASE_DATE,
             MovieColumns.OVERVIEW,
-            MovieColumns.FAVOURITE
+            MovieColumns.FAVOURITE,
+            MovieColumns.POSTER_BLOB
     };
 
     public static int COL_MOVIE_ID = 0;
@@ -83,6 +84,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     public static int COL_RELEASE_DATE = 4;
     public static int COL_OVERVIEW = 5;
     public static int COL_FAVOURITE = 6;
+    public static int COL_POSTER_BLOB = 7;
 
 
     public MainFragment() {
@@ -112,8 +114,9 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
                 if(Util.isOnline(getActivity())){
                     updateMovies();
-                    getActivity().getSupportLoaderManager().restartLoader(CURSOR_LOADER_ID, null, this);
                 }
+
+                getActivity().getSupportLoaderManager().restartLoader(CURSOR_LOADER_ID, null, this);
                 return true;
 
             default:
@@ -162,6 +165,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
                     movie.setReleaseDate(cursor.getString(COL_RELEASE_DATE));
                     movie.setOverview(cursor.getString(COL_OVERVIEW));
                     movie.setFavourite(cursor.getInt(COL_FAVOURITE));
+                    movie.setImageBlob(cursor.getBlob(COL_POSTER_BLOB));
 
                     mPosition = cursor.getPosition();
                     ((Callback) getActivity())
@@ -175,7 +179,9 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
             mPosition = savedInstanceState.getInt(SAVE_POSITION);
         }
 
-
+        if(Util.isOnline(getActivity())){
+            updateMovies();
+        }
         return rootView;
 
     }
@@ -236,7 +242,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
             _gridView.smoothScrollToPosition(mPosition);
         }
         if(Util.isOnline(getActivity())){
-            updateMovies();
+            //updateMovies();
         }
     }
 
