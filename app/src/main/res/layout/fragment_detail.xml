@@ -95,6 +95,14 @@
                     android:gravity="center" />
             </LinearLayout>
 
+            <ToggleButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/btn_favourite"
+                android:checked="false"
+                android:textOff="Mark as Favourite"
+                android:textOn="Remove from Favourite" />
+
         </LinearLayout>
 
         <TextView
