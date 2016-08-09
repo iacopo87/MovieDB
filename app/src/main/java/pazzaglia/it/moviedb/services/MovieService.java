@@ -82,9 +82,10 @@ public class MovieService extends IntentService {
 
         //insert only new movie
         for (Movie movie : movies.getResults()){
+            ContentProviderOperation.Builder builder;
             int movieId = movie.getId();
             if(!idList.contains(movieId)) {
-                ContentProviderOperation.Builder builder = ContentProviderOperation.newInsert(
+                builder = ContentProviderOperation.newInsert(
                         MovieProvider.Movies.CONTENT_URI);
                 builder.withValue(MovieColumns._ID, movieId);
                 builder.withValue(MovieColumns.POSTER_PATH, movie.getPosterPath());
@@ -95,6 +96,10 @@ public class MovieService extends IntentService {
                 builder.withValue(MovieColumns.OVERVIEW, movie.getOverview());
                 builder.withValue(MovieColumns.FAVOURITE, 0);
                 batchOperations.add(builder.build());
+            }  else {
+                builder = ContentProviderOperation.newUpdate(
+                        MovieProvider.Movies.CONTENT_URI);
+                builder.withSelection(MovieColumns._ID +" = ?",  new String[]{String.valueOf(movieId)});
             }
         }
 

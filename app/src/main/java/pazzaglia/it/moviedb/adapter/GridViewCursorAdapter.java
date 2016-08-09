@@ -46,7 +46,7 @@ public class GridViewCursorAdapter extends CursorAdapter{
         // Trigger the download of the URL asynchronously into the image view
         Picasso.with(context) //
                 .load(Constant.BASE_IMG_URL + posterPathUrl) //
-                .placeholder(R.color.colorPrimary) //
+                .placeholder(R.color.colorPrimaryDark) //
                 .fit() //
                 .tag(context) //
                 .into(holder.imageView);
