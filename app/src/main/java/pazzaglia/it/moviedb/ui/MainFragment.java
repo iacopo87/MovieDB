@@ -14,14 +14,13 @@ import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ListView;
+import android.widget.Spinner;
 
 import org.parceler.Parcels;
 
@@ -37,17 +36,20 @@ import pazzaglia.it.moviedb.utils.Constant;
 import pazzaglia.it.moviedb.utils.Util;
 
 import static pazzaglia.it.moviedb.utils.Constant.SAVE_POSITION;
+import static pazzaglia.it.moviedb.utils.Constant.SORTING_FAVOURITE;
 import static pazzaglia.it.moviedb.utils.Constant.SORTING_POPULAR;
+import static pazzaglia.it.moviedb.utils.Constant.SORTING_TOP_RATED;
 
 /**
  * A placeholder fragment containing a simple view.
  */
-public class MainFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class MainFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, AdapterView.OnItemSelectedListener {
+
 
     /* A callback interface that all activities containing this fragment must
-    * implement. This mechanism allows activities to be notified of item
-    * selections.
-    */
+        * implement. This mechanism allows activities to be notified of item
+        * selections.
+        */
     public interface Callback {
         /**
          * DetailFragmentCallback for when an item has been selected.
@@ -62,6 +64,10 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
     @Bind(R.id.grid_view)
     GridView _gridView;
+
+    @Bind(R.id.spinner_order)
+    Spinner _spinner;
+
     int selectedSortOrder = SORTING_POPULAR;
     private View rootView;
     private int mPosition;
@@ -89,46 +95,34 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu,MenuInflater inflater) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        inflater.inflate(R.menu.actionbar_menu, menu);
-    }
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        switch (adapterView.getItemAtPosition(i).toString()){
+            case "Top Rated":
+                selectedSortOrder = SORTING_TOP_RATED;
+                break;
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
+            case "Most Popular":
+                selectedSortOrder = SORTING_POPULAR;
+                break;
 
-            case R.id.action_toggle_sort:
-                // User chose the "Favorite" action, mark the current item
-                // as a favorite...
-                selectedSortOrder = (selectedSortOrder == Constant.SORTING_TOP_RATED)?
-                        SORTING_POPULAR:
-                        Constant.SORTING_TOP_RATED;
+            case "Favourite":
+                selectedSortOrder = SORTING_FAVOURITE;
+                break;
+        }
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putInt(Constant.PREFERENCE_SORTING, selectedSortOrder);
+        editor.commit();
 
-                SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putInt(Constant.PREFERENCE_SORTING, selectedSortOrder);
-                editor.commit();
-
-                if(Util.isOnline(getActivity())){
-                    updateMovies();
-                    getActivity().getSupportLoaderManager().restartLoader(CURSOR_LOADER_ID, null, this);
-                }
-                return true;
-
-            default:
-                // If we got here, the user's action was not recognized.
-                // Invoke the superclass to handle it.
-                return super.onOptionsItemSelected(item);
-
+        if(Util.isOnline(getActivity())){
+            updateMovies();
+            getActivity().getSupportLoaderManager().restartLoader(CURSOR_LOADER_ID, null, this);
         }
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // Add this line in order for this fragment to handle menu events.
-        setHasOptionsMenu(true);
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
     }
 
     @Override
@@ -142,9 +136,16 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         Toolbar myToolbar = (Toolbar) rootView.findViewById(R.id.my_toolbar);
         ((AppCompatActivity) getActivity()).setSupportActionBar(myToolbar);
 
+        selectedSortOrder = getActivity().getPreferences(Context.MODE_PRIVATE).getInt(Constant.PREFERENCE_SORTING, SORTING_POPULAR);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
+                R.array.spinner_order_array,R.layout.spinner_layout);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        _spinner.setAdapter(adapter);
+        _spinner.setOnItemSelectedListener(this);
+        _spinner.setSelection(selectedSortOrder);
+
         gridViewCursorAdapter = new GridViewCursorAdapter(getActivity(), null, 0);
         _gridView.setAdapter(gridViewCursorAdapter);
-
 
         _gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -154,19 +155,9 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
                 Cursor cursor = (Cursor) parent.getItemAtPosition(position);
 
                 if (cursor != null) {
-                    Movie movie = new Movie();
-                    movie.setId(cursor.getInt(COL_MOVIE_ID));
-                    movie.setPosterPath(cursor.getString(COL_POSTER_PATH));
-                    movie.setOriginalTitle(cursor.getString(COL_ORIGINAL_TITLE));
-                    movie.setVoteAverage(cursor.getDouble(COL_VOTE_AVERAGE));
-                    movie.setReleaseDate(cursor.getString(COL_RELEASE_DATE));
-                    movie.setOverview(cursor.getString(COL_OVERVIEW));
-                    movie.setFavourite(cursor.getInt(COL_FAVOURITE));
-
                     mPosition = cursor.getPosition();
                     ((Callback) getActivity())
-                            .onItemSelected(Parcels.wrap(movie));
-
+                            .onItemSelected(Parcels.wrap(createMovieToPass(cursor)));
                 }
             }
         });
@@ -175,9 +166,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
             mPosition = savedInstanceState.getInt(SAVE_POSITION);
         }
 
-
         return rootView;
-
     }
 
     @Override
@@ -195,37 +184,73 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         super.onActivityCreated(savedInstanceState);
     }
 
+    private Movie createMovieToPass(Cursor cursor){
+        Movie movie = new Movie();
+        movie.setId(cursor.getInt(COL_MOVIE_ID));
+        movie.setPosterPath(cursor.getString(COL_POSTER_PATH));
+        movie.setOriginalTitle(cursor.getString(COL_ORIGINAL_TITLE));
+        movie.setVoteAverage(cursor.getDouble(COL_VOTE_AVERAGE));
+        movie.setReleaseDate(cursor.getString(COL_RELEASE_DATE));
+        movie.setOverview(cursor.getString(COL_OVERVIEW));
+        movie.setFavourite(cursor.getInt(COL_FAVOURITE));
+        return movie;
+    }
+
     private void updateMovies(){
+        String snackBarString = "";
         selectedSortOrder = getActivity().getPreferences(Context.MODE_PRIVATE).getInt(Constant.PREFERENCE_SORTING, SORTING_POPULAR);
-        if(selectedSortOrder == Constant.SORTING_TOP_RATED){
-            selectedSortOrder=Constant.SORTING_TOP_RATED;
-            loadTopRatedMovies();
-            Snackbar.make(rootView, "Top rated", Snackbar.LENGTH_LONG).show();
-        }else {
-            selectedSortOrder = SORTING_POPULAR;
-            loadPopularMovies();
-            Snackbar.make(rootView, "Most Popular", Snackbar.LENGTH_LONG).show();
+
+        switch (selectedSortOrder){
+            case SORTING_TOP_RATED:
+                snackBarString = "Top Rated";
+                break;
+
+            case SORTING_POPULAR:
+                snackBarString = "Most Popular";
+                break;
+
+            case SORTING_FAVOURITE:
+                snackBarString = "Favourite";
+                break;
+        }
+        loadMovies(selectedSortOrder);
+        Snackbar.make(rootView, snackBarString, Snackbar.LENGTH_LONG).show();
+    }
+
+    private void loadMovies(int selectionSortOrder){
+        if(selectedSortOrder != SORTING_FAVOURITE) {
+            Intent intent = new Intent(getActivity(), MovieService.class);
+            intent.putExtra(Constant.EXTRA_MOVIE_SORTING, selectionSortOrder);
+            getActivity().startService(intent);
         }
     }
 
-    private void loadPopularMovies(){
-        Intent intent = new Intent(getActivity(), MovieService.class);
-        intent.putExtra(Constant.EXTRA_MOVIE_SORTING, SORTING_POPULAR);
-        getActivity().startService(intent);
-    }
-
-    private void loadTopRatedMovies(){
-        Intent intent = new Intent(getActivity(), MovieService.class);
-        intent.putExtra(Constant.EXTRA_MOVIE_SORTING, SORTING_POPULAR);
-        getActivity().startService(intent);
-    }
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+        String sortOrder = null;
+        String selection = null;
+        String[] selectionArgs = null;
+
+        switch (selectedSortOrder) {
+            case SORTING_POPULAR:
+                sortOrder = MovieColumns.POPULARITY + " DESC";
+                break;
+
+            case SORTING_TOP_RATED:
+                sortOrder = MovieColumns.VOTE_AVERAGE + " DESC";
+                break;
+
+            case SORTING_FAVOURITE:
+                selection = MovieColumns.FAVOURITE +" = ?";
+                selectionArgs = new String[]{String.valueOf(1)};
+        }
+
+
         return new CursorLoader(getActivity(), MovieProvider.Movies.CONTENT_URI,
                 MOVIE_COLUMN,
-                null,
-                null,
-                (selectedSortOrder == SORTING_POPULAR)?MovieColumns.POPULARITY:MovieColumns.VOTE_AVERAGE + " DESC");
+                selection,
+                selectionArgs,
+                sortOrder);
     }
 
     @Override
