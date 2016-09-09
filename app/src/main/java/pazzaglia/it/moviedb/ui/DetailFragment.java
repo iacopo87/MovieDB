@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -19,9 +20,13 @@ import org.parceler.Parcels;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import pazzaglia.it.moviedb.R;
+import pazzaglia.it.moviedb.adapter.TrailerArrayAdapter;
 import pazzaglia.it.moviedb.data.MovieColumns;
 import pazzaglia.it.moviedb.data.MovieProvider;
 import pazzaglia.it.moviedb.models.Movie;
+import pazzaglia.it.moviedb.models.MovieVideos;
+import pazzaglia.it.moviedb.networks.AbstractApiCaller;
+import pazzaglia.it.moviedb.networks.VideosMoviesCaller;
 import pazzaglia.it.moviedb.utils.Constant;
 
 /**
@@ -44,6 +49,8 @@ public class DetailFragment extends Fragment {
     TextView _txtMovieOverview;
     @Bind(R.id.btn_favourite)
     ToggleButton _btnFavourite;
+    @Bind(R.id.lst_trailers)
+    ListView _lstTrailers;
 
     public DetailFragment() {
     }
@@ -80,7 +87,31 @@ public class DetailFragment extends Fragment {
             }
         }) ;
 
+        loadAdditionalData();
+
         return rootview;
+    }
+
+    private void loadAdditionalData(){
+
+        new VideosMoviesCaller().doApiCall(getContext(), null ,movie.getId(), new AbstractApiCaller.MyCallbackInterface<MovieVideos>() {
+            @Override
+            public void onDownloadFinishedOK(MovieVideos result) {
+                TrailerArrayAdapter listTrailerAdapter = new TrailerArrayAdapter(getContext(),
+                        result.getResults());
+                _lstTrailers.setAdapter(listTrailerAdapter);
+                listTrailerAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onDownloadFinishedKO(MovieVideos result) {
+
+            }
+        } );
+
+
+        //new ReviewsMoviesCaller().doApiCall(getContext(), null ,movie.getId(), apiCallback );
+
     }
 
     private void updateToggleState(boolean isChecked){
@@ -91,4 +122,5 @@ public class DetailFragment extends Fragment {
         values.put(MovieColumns.FAVOURITE, isChecked?1:0);
         getActivity().getContentResolver().update(MovieProvider.Movies.CONTENT_URI,values,MovieColumns._ID +" = ?",new String[]{String.valueOf(movie.getId())});
     }
+
 }

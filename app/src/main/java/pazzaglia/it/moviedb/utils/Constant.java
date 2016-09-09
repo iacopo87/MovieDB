@@ -11,6 +11,7 @@ public class Constant {
     //Sorting Order
     public static final int SORTING_POPULAR = 0;
     public static final int SORTING_TOP_RATED = 1;
+    public static final int SORTING_FAVOURITE = 2;
 
     //Preference
     public static final String PREFERENCE_SORTING = "PREFERENCE_SORTING";

@@ -113,5 +113,23 @@
             android:layout_below="@id/img_movie"
             android:padding="16dp" />
 
+        <TextView
+            android:text="Trailers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txt_movie_overview"
+            android:padding="16dp"
+            android:id="@+id/txt_trailers" />
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_below="@+id/txt_trailers"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="16dp"
+            android:id="@+id/lst_trailers"/>
+
+
     </RelativeLayout>
 </ScrollView>
