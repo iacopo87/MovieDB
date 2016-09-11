@@ -11,10 +11,15 @@ import retrofit2.Call;
 public class ReviewsMoviesCaller extends AbstractApiCaller<MovieReviews>{
 
     private static final String TAG = "TopRatedMoviesCaller";
+    private int page = 1;
+
+    public ReviewsMoviesCaller(int page) {
+        this.page = page;
+    }
 
     @Override
     public Call<MovieReviews> specificApiCall(int movieId) {
         return getApiService()
-                .getdMovieReviews(movieId, BuildConfig.MOVIEDB_APIKEY);
+                .getdMovieReviews(movieId, page, BuildConfig.MOVIEDB_APIKEY);
     }
 }

@@ -43,7 +43,6 @@ public abstract class AbstractApiCaller<T> {
         return mInterfaceService;
     }
     public void doApiCall(Context context, String loadingMessage, int movieId, final MyCallbackInterface<T> callback){
-        //final ProgressDialog progressDialog = Util.showDialog(context, loadingMessage);
         Call<T> mService = specificApiCall(movieId);
         mService.enqueue(new Callback<T>() {
             @Override
@@ -55,7 +54,6 @@ public abstract class AbstractApiCaller<T> {
                 }else {
                     callback.onDownloadFinishedKO(mObject);
                 }
-                //Util.dismissDialog(progressDialog);
             }
             @Override
             public void onFailure(Call<T> call, Throwable t) {

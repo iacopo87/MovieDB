@@ -1,5 +1,7 @@
 package pazzaglia.it.moviedb.models;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,8 +17,11 @@ public class MovieReviews {
 
     private Integer id;
     private Integer page;
+    @SerializedName("results")
     private List<MovieReview> reviews = new ArrayList<MovieReview>();
+    @SerializedName("total_pages")
     private Integer totalPages;
+    @SerializedName("total_results")
     private Integer totalResults;
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 

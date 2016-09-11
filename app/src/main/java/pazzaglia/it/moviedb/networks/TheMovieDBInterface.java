@@ -25,7 +25,7 @@ public interface TheMovieDBInterface {
     Call<Movie> getdMovieDetail(@Path("id") int movieId, @Query("api_key") String apiKey);
 
     @GET("movie/{id}/reviews")
-    Call<MovieReviews> getdMovieReviews(@Path("id") int movieId, @Query("api_key") String apiKey);
+    Call<MovieReviews> getdMovieReviews(@Path("id") int movieId, @Query("page") int page, @Query("api_key") String apiKey);
 
     @GET("movie/{id}/videos")
     Call<MovieVideos> getdMovieVideos(@Path("id") int movieId, @Query("api_key") String apiKey);

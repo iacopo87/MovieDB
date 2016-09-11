@@ -42,7 +42,6 @@ public class MovieService extends IntentService {
         }else {
             loadTopRatedMovies();
         }
-
     }
 
     private void loadStoredMovieId(){
@@ -99,6 +98,8 @@ public class MovieService extends IntentService {
             }  else {
                 builder = ContentProviderOperation.newUpdate(
                         MovieProvider.Movies.CONTENT_URI);
+                builder.withValue(MovieColumns.POPULARITY, movie.getPopularity());
+                builder.withValue(MovieColumns.VOTE_AVERAGE, movie.getVoteAverage());
                 builder.withSelection(MovieColumns._ID +" = ?",  new String[]{String.valueOf(movieId)});
             }
         }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -100,6 +101,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/btn_favourite"
                 android:checked="false"
+                android:layout_marginRight="16dp"
                 android:textOff="Mark as Favourite"
                 android:textOn="Remove from Favourite" />
 
@@ -111,14 +113,16 @@
             android:layout_height="wrap_content"
             android:id="@+id/txt_movie_overview"
             android:layout_below="@id/img_movie"
-            android:padding="16dp" />
+            android:padding = "16dp" />
 
         <TextView
             android:text="Trailers"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/txt_movie_overview"
-            android:padding="16dp"
+            android:paddingLeft="16dp"
+            android:textSize="16sp"
+            android:textStyle="bold"
             android:id="@+id/txt_trailers" />
 
         <ListView
@@ -127,9 +131,26 @@
             android:layout_below="@+id/txt_trailers"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginTop="16dp"
             android:id="@+id/lst_trailers"/>
+
+        <TextView
+            android:text="Reviews"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/lst_trailers"
+            android:padding="16dp"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:id="@+id/txt_reviews" />
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_below="@+id/txt_reviews"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:id="@+id/lst_reviews"/>
 
 
     </RelativeLayout>
-</ScrollView>
+</android.support.v4.widget.NestedScrollView>

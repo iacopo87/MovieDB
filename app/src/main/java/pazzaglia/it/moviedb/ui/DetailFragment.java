@@ -4,11 +4,13 @@ import android.content.ContentProviderOperation;
 import android.content.ContentValues;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.NestedScrollingChildHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -20,12 +22,15 @@ import org.parceler.Parcels;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import pazzaglia.it.moviedb.R;
+import pazzaglia.it.moviedb.adapter.ReviewArrayAdapter;
 import pazzaglia.it.moviedb.adapter.TrailerArrayAdapter;
 import pazzaglia.it.moviedb.data.MovieColumns;
 import pazzaglia.it.moviedb.data.MovieProvider;
 import pazzaglia.it.moviedb.models.Movie;
+import pazzaglia.it.moviedb.models.MovieReviews;
 import pazzaglia.it.moviedb.models.MovieVideos;
 import pazzaglia.it.moviedb.networks.AbstractApiCaller;
+import pazzaglia.it.moviedb.networks.ReviewsMoviesCaller;
 import pazzaglia.it.moviedb.networks.VideosMoviesCaller;
 import pazzaglia.it.moviedb.utils.Constant;
 
@@ -35,7 +40,6 @@ import pazzaglia.it.moviedb.utils.Constant;
 public class DetailFragment extends Fragment {
 
     Movie movie;
-
 
     @Bind(R.id.img_movie)
     ImageView _imgMovie;
@@ -51,6 +55,9 @@ public class DetailFragment extends Fragment {
     ToggleButton _btnFavourite;
     @Bind(R.id.lst_trailers)
     ListView _lstTrailers;
+    @Bind(R.id.lst_reviews)
+    ListView _lstReviews;
+    int totalReviewPages = 0;
 
     public DetailFragment() {
     }
@@ -100,6 +107,7 @@ public class DetailFragment extends Fragment {
                 TrailerArrayAdapter listTrailerAdapter = new TrailerArrayAdapter(getContext(),
                         result.getResults());
                 _lstTrailers.setAdapter(listTrailerAdapter);
+                setListViewHeightBasedOnChildren(_lstTrailers);
                 listTrailerAdapter.notifyDataSetChanged();
             }
 
@@ -109,10 +117,25 @@ public class DetailFragment extends Fragment {
             }
         } );
 
-
-        //new ReviewsMoviesCaller().doApiCall(getContext(), null ,movie.getId(), apiCallback );
+        new ReviewsMoviesCaller(1).doApiCall(getContext(), null ,movie.getId(), callback);
 
     }
+
+    private AbstractApiCaller.MyCallbackInterface<MovieReviews> callback = new AbstractApiCaller.MyCallbackInterface<MovieReviews>() {
+        @Override
+        public void onDownloadFinishedOK(MovieReviews result) {
+            ReviewArrayAdapter listReviewAdapter = new ReviewArrayAdapter(getContext(),
+                    result.getReviews());
+            totalReviewPages = (result.getTotalPages() != null)?result.getTotalPages():1;
+            _lstReviews.setAdapter(listReviewAdapter);
+            setListViewHeightBasedOnChildren(_lstReviews);
+            listReviewAdapter.notifyDataSetChanged();
+        }
+
+        @Override
+        public void onDownloadFinishedKO(MovieReviews result) {
+        }
+    };
 
     private void updateToggleState(boolean isChecked){
         ContentProviderOperation.Builder builder;builder = ContentProviderOperation.newUpdate(
@@ -123,4 +146,22 @@ public class DetailFragment extends Fragment {
         getActivity().getContentResolver().update(MovieProvider.Movies.CONTENT_URI,values,MovieColumns._ID +" = ?",new String[]{String.valueOf(movie.getId())});
     }
 
+    private  void setListViewHeightBasedOnChildren(ListView listView) {
+        ListAdapter listAdapter = listView.getAdapter();
+        if (listAdapter == null) {
+            // pre-condition
+            return;
+        }
+
+        int totalHeight = 0;
+        for (int i = 0; i < listAdapter.getCount(); i++) {
+            View listItem = listAdapter.getView(i, null, listView);
+            listItem.measure(0, 0);
+            totalHeight += listItem.getMeasuredHeight();
+        }
+
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+        listView.setLayoutParams(params);
+    }
 }
