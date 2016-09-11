@@ -4,7 +4,6 @@ import android.content.ContentProviderOperation;
 import android.content.ContentValues;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.NestedScrollingChildHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,7 +56,6 @@ public class DetailFragment extends Fragment {
     ListView _lstTrailers;
     @Bind(R.id.lst_reviews)
     ListView _lstReviews;
-    int totalReviewPages = 0;
 
     public DetailFragment() {
     }
@@ -69,24 +67,12 @@ public class DetailFragment extends Fragment {
 
         View rootview = inflater.inflate(R.layout.fragment_detail, container, false);
         ButterKnife.bind(this, rootview);
+
         Bundle arguments = getArguments();
         if (arguments != null) {
-            movie = (Movie) Parcels.unwrap(arguments.getParcelable(Constant.EXTRA_MOVIE));
-            //Setup the UI
-            _txtMovieTitle.setText(movie.getOriginalTitle());
-            _txtUserRating.setText(movie.getVoteAverage().toString());
-            _txtReleaseDate.setText(movie.getReleaseDate().toString());
-            _txtMovieOverview.setText(movie.getOverview());
-            _btnFavourite.setChecked(movie.getFavourite() == 1);
-            Picasso.with(getActivity()) //
-                    .load(Constant.BASE_IMG_URL + movie.getPosterPath()) //
-                    .placeholder(R.color.colorPrimary) //
-                    .resize(120,180)
-                    .centerCrop()
-                    .tag(this) //
-                    .into(_imgMovie);
-
+            initializeUI(arguments);
         }
+
         _btnFavourite.setOnCheckedChangeListener( new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton toggleButton, boolean isChecked) {
@@ -97,6 +83,23 @@ public class DetailFragment extends Fragment {
         loadAdditionalData();
 
         return rootview;
+    }
+
+    private void initializeUI(Bundle arguments){
+        movie = (Movie) Parcels.unwrap(arguments.getParcelable(Constant.EXTRA_MOVIE));
+        //Setup the UI
+        _txtMovieTitle.setText(movie.getOriginalTitle());
+        _txtUserRating.setText(movie.getVoteAverage().toString());
+        _txtReleaseDate.setText(movie.getReleaseDate().toString());
+        _txtMovieOverview.setText(movie.getOverview());
+        _btnFavourite.setChecked(movie.getFavourite() == 1);
+        Picasso.with(getActivity()) //
+                .load(Constant.BASE_IMG_URL + movie.getPosterPath()) //
+                .placeholder(R.color.colorPrimary) //
+                .resize(120,180)
+                .centerCrop()
+                .tag(this) //
+                .into(_imgMovie);
     }
 
     private void loadAdditionalData(){
@@ -126,7 +129,6 @@ public class DetailFragment extends Fragment {
         public void onDownloadFinishedOK(MovieReviews result) {
             ReviewArrayAdapter listReviewAdapter = new ReviewArrayAdapter(getContext(),
                     result.getReviews());
-            totalReviewPages = (result.getTotalPages() != null)?result.getTotalPages():1;
             _lstReviews.setAdapter(listReviewAdapter);
             setListViewHeightBasedOnChildren(_lstReviews);
             listReviewAdapter.notifyDataSetChanged();
@@ -164,4 +166,6 @@ public class DetailFragment extends Fragment {
         params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
         listView.setLayoutParams(params);
     }
+
+
 }
