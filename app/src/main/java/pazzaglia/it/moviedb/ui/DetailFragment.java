@@ -1,5 +1,7 @@
 package pazzaglia.it.moviedb.ui;
 
+import android.content.ContentProviderOperation;
+import android.content.ContentValues;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -93,15 +95,18 @@ public class DetailFragment extends Fragment {
         _txtMovieOverview.setText(movie.getOverview());
         _btnFavourite.setChecked(movie.getFavourite() == 1);
         byte[] imgByte = movie.getImageBlob();
-            _imgMovie.setImageBitmap(BitmapFactory.decodeByteArray(imgByte, 0, imgByte.length));
 
-	/*Picasso.with(getActivity()) //
-                .load(Constant.BASE_IMG_URL + movie.getPosterPath()) //
-                .placeholder(R.color.colorPrimary) //
-                .resize(120,180)
-                .centerCrop()
-                .tag(this) //
-                .into(_imgMovie); */
+        if(imgByte != null && imgByte.length != 0) {
+            _imgMovie.setImageBitmap(BitmapFactory.decodeByteArray(imgByte, 0, imgByte.length));
+        } else {
+            Picasso.with(getActivity()) //
+                        .load(Constant.BASE_IMG_URL + movie.getPosterPath()) //
+                        .placeholder(R.color.colorPrimary) //
+                        .resize(120,180)
+                        .centerCrop()
+                        .tag(this) //
+                        .into(_imgMovie);
+        }
     }
 
     private void loadAdditionalData(){

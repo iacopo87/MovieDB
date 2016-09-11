@@ -14,9 +14,5 @@ public final class MovieDatabase {
     public static final int VERSION = 1;
 
     @Table(MovieColumns.class) public static final String MOVIE = "movie";
-
-    @Table(MovieReviewColumns.class) public static final String MOVIE_REVIEW = "movie_review";
-
-    @Table(MovieVideoColumns.class) public static final String MOVIE_VIDEO = "movie_video";
 }
 

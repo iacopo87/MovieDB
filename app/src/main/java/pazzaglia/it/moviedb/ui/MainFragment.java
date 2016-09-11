@@ -179,11 +179,10 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         super.onSaveInstanceState(outState);
     }
 
-
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
         super.onActivityCreated(savedInstanceState);
+        getActivity().getSupportLoaderManager().restartLoader(CURSOR_LOADER_ID, null, this);
     }
 
     private Movie createMovieToPass(Cursor cursor){
@@ -195,6 +194,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         movie.setReleaseDate(cursor.getString(COL_RELEASE_DATE));
         movie.setOverview(cursor.getString(COL_OVERVIEW));
         movie.setFavourite(cursor.getInt(COL_FAVOURITE));
+        movie.setImageBlob(cursor.getBlob(COL_POSTER_BLOB));
         return movie;
     }
 
@@ -261,9 +261,6 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         gridViewCursorAdapter.notifyDataSetChanged();
         if(mPosition != ListView.INVALID_POSITION) {
             _gridView.smoothScrollToPosition(mPosition);
-        }
-        if(Util.isOnline(getActivity())){
-            updateMovies();
         }
     }
 

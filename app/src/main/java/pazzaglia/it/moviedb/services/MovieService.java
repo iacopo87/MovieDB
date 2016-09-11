@@ -34,7 +34,8 @@ import static pazzaglia.it.moviedb.utils.Constant.SORTING_POPULAR;
 public class MovieService extends IntentService {
 
     private static final String TAG = "MovieService";
-    private List<Integer> idList = new ArrayList<Integer>();
+    private List<Integer> idList;
+    private List<Integer> idListWithoutImage;
 
     public MovieService() {
         super("MovieService");
@@ -42,6 +43,9 @@ public class MovieService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
+        idListWithoutImage = new ArrayList<Integer>();;
+        idList = new ArrayList<Integer>();
+
         loadStoredMovieId();
         int movieOrder = intent.getIntExtra(EXTRA_MOVIE_SORTING, SORTING_POPULAR);
 
@@ -54,11 +58,16 @@ public class MovieService extends IntentService {
 
     private void loadStoredMovieId(){
         Cursor c = getContentResolver().query(MovieProvider.Movies.CONTENT_URI,
-                new String[]{MovieColumns._ID}, null, null, null);
+                new String[]{MovieColumns._ID, MovieColumns.POSTER_BLOB}, null, null, null);
 
         while (c.moveToNext()){
             idList.add(c.getInt(c.getColumnIndex(MovieColumns._ID)));
+            if(c.getBlob((c.getColumnIndex(MovieColumns.POSTER_BLOB))) == null){
+                idListWithoutImage.add(c.getInt(c.getColumnIndex(MovieColumns._ID)));
+            }
         }
+
+        c.close();
 
     }
 
@@ -103,21 +112,19 @@ public class MovieService extends IntentService {
                 builder.withValue(MovieColumns.RELEASE_DATE, movie.getReleaseDate());
                 builder.withValue(MovieColumns.OVERVIEW, movie.getOverview());
                 builder.withValue(MovieColumns.FAVOURITE, 0);
-                batchOperations.add(builder.build());
+
             }  else {
                 builder = ContentProviderOperation.newUpdate(
                         MovieProvider.Movies.CONTENT_URI);
-                builder.withValue(MovieColumns.POPULARITY, movie.getPopularity());
-                builder.withValue(MovieColumns.VOTE_AVERAGE, movie.getVoteAverage());
                 builder.withSelection(MovieColumns._ID +" = ?",  new String[]{String.valueOf(movieId)});
             }
 
+            if(!idListWithoutImage.contains(movieId)) {
+                Picasso.with(getApplicationContext()) //
+                        .load(Constant.BASE_IMG_URL + movie.getPosterPath()) //
+                        .into(getTarget(movieId));
+            }
 
-            Picasso.with(getApplicationContext()) //
-                    .load(Constant.BASE_IMG_URL + movie.getPosterPath()) //
-                    .into(getTarget(movieId));
-
-            builder.withValue(MovieColumns.POSTER_PATH, movie.getPosterPath());
             builder.withValue(MovieColumns.POPULARITY, movie.getPopularity());
             builder.withValue(MovieColumns.VOTE_AVERAGE, movie.getVoteAverage());
 
@@ -172,7 +179,7 @@ public class MovieService extends IntentService {
 
     public static byte[] getBitmapAsByteArray(Bitmap bitmap) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, outputStream);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
         return outputStream.toByteArray();
     }
 
