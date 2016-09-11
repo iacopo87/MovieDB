@@ -163,25 +163,23 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
                 }
             }
         });
-
-        if(savedInstanceState != null && savedInstanceState.containsKey(SAVE_POSITION)){
-            mPosition = savedInstanceState.getInt(SAVE_POSITION);
-        }
-
         return rootView;
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
         if(mPosition != ListView.INVALID_POSITION) {
             outState.putInt(SAVE_POSITION, mPosition);
         }
-        super.onSaveInstanceState(outState);
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        if(savedInstanceState != null && savedInstanceState.containsKey(SAVE_POSITION)){
+            mPosition = savedInstanceState.getInt(SAVE_POSITION);
+        }
         getActivity().getSupportLoaderManager().restartLoader(CURSOR_LOADER_ID, null, this);
     }
 
