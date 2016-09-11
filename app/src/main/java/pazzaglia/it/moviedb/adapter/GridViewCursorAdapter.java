@@ -8,6 +8,7 @@ import android.support.v4.widget.CursorAdapter;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
@@ -16,6 +17,7 @@ import butterknife.ButterKnife;
 import pazzaglia.it.moviedb.R;
 import pazzaglia.it.moviedb.data.MovieColumns;
 import pazzaglia.it.moviedb.utils.Constant;
+import pazzaglia.it.moviedb.utils.Util;
 
 /**
  * Created by IO on 12/07/2016.
@@ -28,6 +30,8 @@ public class GridViewCursorAdapter extends CursorAdapter{
     {
         @Bind(R.id.image_movie)
         ImageView imageView;
+        @Bind(R.id.text_poster)
+        TextView txtAlternateTitle;
         ViewHolder(View v) {
             ButterKnife.bind(this, v);
         }
@@ -54,13 +58,6 @@ public class GridViewCursorAdapter extends CursorAdapter{
                     .tag(context) //
                     .into(holder.imageView);
         }
-        // Trigger the download of the URL asynchronously into the image view
-       /* Picasso.with(context) //
-                .load(Constant.BASE_IMG_URL + posterPathUrl) //
-                .placeholder(R.color.colorPrimaryDark) //
-                .fit() //
-                .tag(context) //
-                .into(holder.imageView);*/
     }
 
     @Override
@@ -76,6 +73,10 @@ public class GridViewCursorAdapter extends CursorAdapter{
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
         ViewHolder holder = (ViewHolder)view.getTag();
+        if(!Util.isOnline(context)){
+            holder.txtAlternateTitle.setText(cursor.getString(cursor.getColumnIndex(MovieColumns.ORIGINAL_TITLE)));
+            holder.txtAlternateTitle.setVisibility(View.VISIBLE);
+        }
         loadPosterImage(holder, cursor);
     }
 

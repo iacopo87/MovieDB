@@ -1,7 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="185dp"
+    android:layout_height="280dp">
+
     <ImageView xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="185dp"
         android:layout_height="280dp"
         android:adjustViewBounds="true"
         android:scaleType="centerCrop"
         android:id="@+id/image_movie" />
+
+    <TextView
+        android:padding="16dp"
+        android:textColor="@android:color/white"
+        android:gravity="center_horizontal|center_vertical"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/text_poster"
+        android:visibility="gone"/>
+
+</RelativeLayout>

@@ -118,8 +118,8 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
         if(Util.isOnline(getActivity())){
             updateMovies();
-            getActivity().getSupportLoaderManager().restartLoader(CURSOR_LOADER_ID, null, this);
         }
+        getActivity().getSupportLoaderManager().restartLoader(CURSOR_LOADER_ID, null, this);
     }
 
     @Override
