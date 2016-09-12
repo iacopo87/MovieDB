@@ -21,6 +21,7 @@ import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import org.parceler.Parcels;
 
@@ -259,6 +260,13 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         gridViewCursorAdapter.notifyDataSetChanged();
         if(mPosition != ListView.INVALID_POSITION) {
             _gridView.smoothScrollToPosition(mPosition);
+        }
+        _gridView.setEmptyView(getActivity().findViewById(R.id.grid_view_empty));
+        TextView emptyView = (TextView)getActivity().findViewById(R.id.grid_view_empty);
+        if(!Util.isOnline(getContext())){
+            emptyView.setText(R.string.no_data_available_offline);
+        } else {
+            emptyView.setText(R.string.no_data_available);
         }
     }
 

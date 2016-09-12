@@ -34,7 +34,14 @@
         android:stretchMode="columnWidth"
         android:gravity="center" />
 
-
+    <TextView
+        android:id="@+id/grid_view_empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:padding="16dp"
+        android:textSize="16sp"
+        android:text="@string/no_data_available" />
 
 </android.support.v7.widget.LinearLayoutCompat>
 
